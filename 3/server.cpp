@@ -93,28 +93,20 @@ int main(int argc, char *argv[])
             if (FD_ISSET(sockety, &readfds))
             { 
                 valread = read(sockety, buffer, 1024);
-                buffer[valread] = '\0';
-                // if(valread == 0)
-                // {
                 string getData(buffer);
                 getData.erase(remove(getData.begin(), getData.end(), '\n'), getData.end());
-                cout << (getData == "quit") << endl;
-                for(int j = 0;j<getData.size();j++)
-                {
-                    if(getData[j] == '\n')
-                    {
-                        cout << "ok" << endl;
-                    }
-                }
-                cout << endl;
-                if(getData == "quit")
+                string quit;
+                quit[0] = getData[0];
+                quit[1] = getData[1];
+                quit[2] = getData[2];
+                quit[3] = getData[3];
+                if(!getData.find("quit"))
                 {
                     getpeername(sockety, (struct sockaddr*)&address, (socklen_t*)&addrlen);
-                    cout << " " << inet_ntoa(address.sin_addr) << " " << ntohs(address.sin_port) << endl;
                     close(sockety);
+                    cout << "Client " << i << " disconnected" << endl;
                     client_sockets[i] = 0;
                 }
-            // }
                 else
                 {
                     buffer[valread] = '\0';
