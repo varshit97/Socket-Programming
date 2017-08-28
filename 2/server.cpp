@@ -106,7 +106,7 @@ void *client(void *threadid)
         if(!input.compare("quit"))
         {
             cout << "breaking thread" << endl;
-            break;
+			exit(0);
         }
         int sent = send(sock, input.data(), input.size(), 0);
     }

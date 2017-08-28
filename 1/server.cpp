@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     while(true)
     {
-        string sendData = "Hello00000";
+        string sendData ="Broadcast message";
         new_socket = accept(master_socket, (struct sockaddr *)&address, (socklen_t*)&addrlen);
         int rr= sendto(master_socket, sendData.data(), sendData.size(), 0, (struct sockaddr *)&address, sizeof(sockaddr_in));
 		sleep(5);
