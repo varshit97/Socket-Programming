@@ -7,7 +7,8 @@
 #include <sys/socket.h> 
 #include <netinet/in.h> 
 #include <sys/time.h>
-#define PORT 8899
+#define PORT 7223
+#define PORT2 7223
 
 using namespace std;
 
@@ -31,13 +32,13 @@ int main(int argc, char *argv[])
     }
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = inet_addr("10.1.34.*");
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(PORT2);
     if(bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
     {
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-    cout << "Listening on port " << PORT << endl;
+    cout << "Listening on port " << PORT2 << endl;
 
     addrlen = sizeof(address);
     cout << "Waiting for clients..." << endl;

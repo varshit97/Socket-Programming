@@ -119,7 +119,7 @@ int main()
     pthread_t threads[NUM_THREADS];
     int server1, client1;
 	PORT1=4000+(rand()%5000);
-	cout << "Enter This Port in your client"<< PORT1 << endl;
+	cout << "Enter This Port in your client "<< PORT1 << endl;
 	cout << "Enter The client adress" << endl;
 	cin >> cla;
 	cout <<"Enter the port of client u want to connect"<<endl;
