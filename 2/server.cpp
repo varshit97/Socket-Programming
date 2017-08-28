@@ -12,14 +12,12 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
-#define PORT1 8888
-#define PORT2 8889
-
+int PORT1 ,PORT2 ;
 using namespace std;
+string cla;
 
 void *server(void *threadid)
 {
-    cout << "In server1" << endl;
     int server_fd, new_socket, valread;
     struct sockaddr_in address;
     int opt = 1;
@@ -70,7 +68,8 @@ void *server(void *threadid)
 
 void *client(void *threadid)
 {
-    cout << "In client1" << endl;
+	char hostname[128];
+	cin >> PORT2;
     struct sockaddr_in address;
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
@@ -88,7 +87,7 @@ void *client(void *threadid)
     serv_addr.sin_port = htons(PORT2);
       
     // Convert IPv4 and IPv6 addresses from text to binary form
-    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) 
+    if(inet_pton(AF_INET, cla.data(), &serv_addr.sin_addr) <= 0) 
     {
         cout << "\nInvalid address/ Address not supported" << endl;
         // return -1;
@@ -103,24 +102,28 @@ void *client(void *threadid)
     string input;
     while(true)
     {
-        cin >> input;
+        getline(cin, input);
         if(!input.compare("quit"))
         {
             cout << "breaking thread" << endl;
             break;
         }
         int sent = send(sock, input.data(), input.size(), 0);
-        cout << "Message sent" << endl;
     }
 }
 
 int main()
 {
+	srand (time(NULL));
     int NUM_THREADS = 2;
     pthread_t threads[NUM_THREADS];
     int server1, client1;
+	PORT1=4000+(rand()%5000);
+	cout << "Enter This Port in your client"<< PORT1 << endl;
+	cout << "Enter The client adress" << endl;
+	cin >> cla;
+	cout <<"Enter the port of client u want to connect"<<endl;
     server1 = pthread_create(&threads[0], NULL, server, (void *)0);
-    sleep(5);
     client1 = pthread_create(&threads[1], NULL, client, (void *)1);
     pthread_exit(NULL);
     return 0;

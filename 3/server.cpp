@@ -11,6 +11,24 @@
 
 using namespace std;
 
+static void
+broadcast(const char *mess)
+{
+    struct sockaddr_in s;
+
+    if(broadcastSock < 0)
+        return;
+
+    memset(&s, '\0', sizeof(struct sockaddr_in));
+    s.sin_family = AF_INET;
+    s.sin_port = (in_port_t)htons(tcpSocket ? tcpSocket : 3310);
+    s.sin_addr.s_addr = htonl(INADDR_BROADCAST);
+
+    cli_dbgmsg("broadcast %s to %d\n", mess, broadcastSock);
+    if(sendto(broadcastSock, mess, strlen(mess), 0, (struct sockaddr *)&s, sizeof(struct sockaddr_in)) < 0)
+        perror("sendto");
+}
+
 int main(int argc, char *argv[])
 {
     int master_socket, addrlen, new_socket, client_sockets[30] = {0}, max_clients = 30, valread, sockety, opt = 1, max_socket;
@@ -24,7 +42,7 @@ int main(int argc, char *argv[])
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
-    if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 )
+    if( setsockopt(master_socket, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt)) < 0 )
     {
         perror("setsockopt");
         exit(EXIT_FAILURE);
@@ -45,7 +63,7 @@ int main(int argc, char *argv[])
     }
 
     addrlen = sizeof(address);
-    cout << "Waiting for connections ..." << endl;
+    cout << "Waiting for clients..." << endl;
 
     while(true)
     {
@@ -95,11 +113,6 @@ int main(int argc, char *argv[])
                 valread = read(sockety, buffer, 1024);
                 string getData(buffer);
                 getData.erase(remove(getData.begin(), getData.end(), '\n'), getData.end());
-                string quit;
-                quit[0] = getData[0];
-                quit[1] = getData[1];
-                quit[2] = getData[2];
-                quit[3] = getData[3];
                 if(!getData.find("quit"))
                 {
                     getpeername(sockety, (struct sockaddr*)&address, (socklen_t*)&addrlen);
